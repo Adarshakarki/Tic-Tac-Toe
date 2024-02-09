@@ -11,7 +11,9 @@ let isBotOpponent = false;
 function cellClick(index) {
     if (gameBoard[index] === '' && gameActive) {
         gameBoard[index] = currentPlayer;
-        document.getElementById('board').children[index].innerText = currentPlayer;
+        const cellElement = document.getElementById('board').children[index];
+        cellElement.innerText = currentPlayer;
+        cellElement.style.color = currentPlayer === 'X' ? 'red' : 'blue'; // Change color based on current player
 
         if (checkWin()) {
             showWinnerPopup(currentPlayer);
@@ -29,6 +31,7 @@ function cellClick(index) {
         }
     }
 }
+
 
 function makeBotMove() {
     if (currentPlayer === 'O') {
@@ -63,7 +66,7 @@ function getBestMove() {
     for (let i = 0; i < 9; i++) {
         if (gameBoard[i] === '') {
             gameBoard[i] = currentPlayer;
-            const score = minimax(gameBoard, 0, -Infinity, Infinity, false);
+            const score = minimax(gameBoard, 4, -Infinity, Infinity, false); // increased depth
             gameBoard[i] = '';
 
             if (score > bestMove.score) {
@@ -88,7 +91,7 @@ function minimax(board, depth, alpha, beta, isMaximizing) {
         return scores[winner];
     }
 
-    if (gameBoard.every(cell => cell !== '')) {
+    if (board.every(cell => cell !== '')) {
         return scores.tie;
     }
 
@@ -97,7 +100,7 @@ function minimax(board, depth, alpha, beta, isMaximizing) {
         for (let i = 0; i < 9; i++) {
             if (board[i] === '') {
                 board[i] = 'O';
-                const score = minimax(board, depth + 1, alpha, beta, false);
+                const score = minimax(board, depth - 1, alpha, beta, false); // reduced depth for opponent
                 board[i] = '';
                 maxScore = Math.max(score, maxScore);
                 alpha = Math.max(alpha, score);
@@ -112,7 +115,7 @@ function minimax(board, depth, alpha, beta, isMaximizing) {
         for (let i = 0; i < 9; i++) {
             if (board[i] === '') {
                 board[i] = 'X';
-                const score = minimax(board, depth + 1, alpha, beta, true);
+                const score = minimax(board, depth - 1, alpha, beta, true); // reduced depth for opponent
                 board[i] = '';
                 minScore = Math.min(score, minScore);
                 beta = Math.min(beta, score);
@@ -124,6 +127,31 @@ function minimax(board, depth, alpha, beta, isMaximizing) {
         return minScore;
     }
 }
+
+const openingBook = {
+    X: {
+        0: 4,
+        1: 4,
+        2: 6,
+        3: 2,
+        4: 8,
+        5: 6,
+        6: 2,
+        7: 0,
+        8: 0,
+    },
+    O: {
+        0: 0,
+        1: 2,
+        2: 6,
+        3: 8,
+        4: 4,
+        5: 8,
+        6: 2,
+        7: 6,
+        8: 4,
+    },
+};
 
 function showWinnerPopup(player) {
     const popupMessage = `Player ${player} wins! 🎉`;
