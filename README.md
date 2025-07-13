@@ -11,4 +11,4 @@ Welcome to the Tic Tac Toe game! This is a classic Tic Tac Toe game implemented 
 ![tictac](Screenshot%202025-07-12%20180938.png)
 
 ## Play game
-### https://adarshakarki.github.io/tictac/
+### https://adarshakarki.github.io/Tic-Tac-Toe/
